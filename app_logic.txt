@@ -1,0 +1,161 @@
+### app_logic.txt
+
+#### 1. App Overview
+This is a **personal training tracker** app for Android 16 (Google Pixel 9 target).  
+It allows the user to log, review, and export training sessions locally.  
+Each session includes a list of exercises, and each exercise contains sets with `kg`, `reps`, optional notes, and a personal rating (feeling).  
+
+The app emphasizes:
+- Local-only data storage (no cloud sync).
+- Simplicity and persistence through app updates.
+- Clean, minimal UI.
+- Statistical overview and graphs of training progress per exercise type.
+
+---
+
+#### 2. Core Modules
+
+- **UI Layer**
+  - Simple layouts using Jetpack Compose or classic XML.
+  - Key screens:
+    - Home
+    - Exercise Library
+    - Active Training
+    - Training Summary
+    - History
+    - Statistics / Graphs
+  - Minimal visuals and intuitive structure.
+
+- **Data Layer**
+  - Local JSON file storage (`training_data.json`) in internal app directory (`context.filesDir`).
+  - Data survives app updates and reinstalls (if user keeps app data).
+  - Optional export through file picker (Save to Downloads).
+
+- **Logic Layer**
+  - Handles all CRUD operations for exercises, sessions, and statistics.
+  - Generates unique GUID for every training session.
+  - Performs data validation and ensures JSON integrity.
+  - Computes statistics and aggregates exercise history for chart rendering.
+
+---
+
+#### 3. Data Flow
+1. On startup â†’ check if `training_data.json` exists, else create it.  
+2. Load and parse JSON into memory.  
+3. When starting a new session â†’ generate GUID and add exercises.  
+4. User inputs sets (kg, reps, note, rating).  
+5. On completion â†’ save session to file.  
+6. When viewing statistics â†’ load all sessions, filter by selected exercise, compute metrics, display charts.
+
+---
+
+#### 4. Data Models
+
+```
+ExerciseLibraryItem {
+  id: Int
+  name: String
+  category: String?
+}
+
+ExerciseEntry {
+  exerciseId: Int
+  exerciseName: String
+  setNumber: Int
+  kg: Float
+  reps: Int
+  note: String?
+  rating: Int?
+}
+
+TrainingSession {
+  id: String // GUID for guaranteed uniqueness
+  trainingNumber: Int
+  date: String // yyyy/mm/dd
+  exercises: List<ExerciseEntry>
+}
+```
+
+**GUID generation (Kotlin):**
+```kotlin
+val trainingId = UUID.randomUUID().toString()
+```
+
+---
+
+#### 5. Storage Structure
+- **File type:** JSON  
+- **File name:** `training_data.json`  
+- **Location:** `context.filesDir`  
+- **Persistence:** File reused between sessions and app updates.  
+- **Export:** Manual via file picker.  
+- **Data integrity:** Validate JSON before overwrite.
+
+Example JSON:
+```json
+{
+  "trainings": [
+    {
+      "id": "b122a9de-47fd-4c93-8177-54038a5f4a7c",
+      "trainingNumber": 5,
+      "date": "2025/11/13",
+      "exercises": [
+        {
+          "exerciseName": "Bench Press",
+          "setNumber": 1,
+          "kg": 82.5,
+          "reps": 8,
+          "note": "Good energy",
+          "rating": 5
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+#### 6. Feature Logic
+
+- **Exercise Library**
+  - Add/edit/delete exercises.
+  - Add missing exercises on-the-fly during training.
+
+- **Training Session**
+  - Generate GUID, auto-increment trainingNumber.
+  - Add sets dynamically.
+  - Add note and rating per exercise.
+  - Save to JSON on finish.
+
+- **History View**
+  - Load all past sessions.
+  - Display list sorted by date or training number.
+  - Expand for session details.
+
+- **Statistics / Graphs**
+  - Select an exercise name from dropdown.
+  - Collect all sets for that exercise across all sessions.
+  - Compute:
+    - Average weight (kg)
+    - Max weight (kg)
+    - Total reps per session
+    - Trend over time
+  - Display interactive graph (e.g., line chart using MPAndroidChart or Compose Charts).
+
+---
+
+#### 7. Data Safety and Compatibility
+- Validate JSON before load/write.
+- Maintain backward compatibility for schema changes.
+- Preserve internal file across updates.
+- Run lint and syntax validation before build.
+- Scoped storage compliance for Android 14â€“16.
+
+---
+
+#### 8. Future Expansion
+- CSV import/export.
+- Exercise tagging or grouping by category.
+- PR tracking highlights.
+- Volume and intensity graphs per muscle group.
