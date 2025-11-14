@@ -4,6 +4,7 @@
     <string name="welcome_subtitle">Your personal fitness companion</string>
     <string name="start_workout">Start Workout</string>
     <string name="view_progress">View Progress</string>
+    <string name="view_history">View History</string>
     <string name="exercises">Exercises</string>
     <string name="today_stats">Today\'s Stats</string>
     <string name="workouts_completed">Workouts Completed</string>

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/fitness_background"
     android:fillViewport="true"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -67,6 +68,21 @@
             app:layout_constraintTop_toBottomOf="@id/button_start_workout" />
 
         <Button
+            android:id="@+id/button_view_history"
+            android:layout_width="0dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/fitness_primary_dark"
+            android:text="@string/view_history"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_view_progress" />
+
+        <Button
             android:id="@+id/button_exercises"
             android:layout_width="0dp"
             android:layout_height="64dp"
@@ -79,7 +95,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button_view_progress" />
+            app:layout_constraintTop_toBottomOf="@id/button_view_history" />
 
         <!-- Today's Stats Section -->
         <TextView
