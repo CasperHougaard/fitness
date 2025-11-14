@@ -14,6 +14,7 @@ class LogSetActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLogSetBinding
     private var selectedRating: Int = 0
     private lateinit var ratingTiles: List<TextView>
+    private lateinit var jsonHelper: JsonHelper
 
     companion object {
         const val EXTRA_EXERCISE_ID = "extra_exercise_id"
@@ -26,10 +27,12 @@ class LogSetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLogSetBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        jsonHelper = JsonHelper(this)
 
         val exerciseName = intent.getStringExtra(EXTRA_EXERCISE_NAME) ?: "Exercise"
         binding.textLogSetTitle.text = "Log Set for $exerciseName"
 
+        prefillData(exerciseName)
         setupRatingTiles()
 
         binding.buttonSaveSet.setOnClickListener {
@@ -38,6 +41,19 @@ class LogSetActivity : AppCompatActivity() {
 
         binding.buttonBack.setOnClickListener {
             onBackPressed()
+        }
+    }
+
+    private fun prefillData(exerciseName: String) {
+        val trainingData = jsonHelper.readTrainingData()
+        val lastSet = trainingData.trainings
+            .flatMap { it.exercises }
+            .filter { it.exerciseName == exerciseName }
+            .lastOrNull()
+
+        if (lastSet != null) {
+            binding.editTextKg.setText(lastSet.kg.toString())
+            binding.editTextReps.setText(lastSet.reps.toString())
         }
     }
 

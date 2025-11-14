@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Fitness">
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SelectDefaultExerciseActivity"
+            android:exported="false" />
+        <activity
             android:name=".TrainingDetailActivity"
             android:exported="false" />
         <activity

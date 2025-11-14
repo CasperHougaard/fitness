@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fitness.databinding.ActivityMainBinding
+import com.example.fitness.models.ExerciseLibraryItem
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,8 +25,24 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         jsonHelper = JsonHelper(this)
 
+        setupDefaultExercises()
         setupClickListeners()
         updateStats()
+    }
+
+    private fun setupDefaultExercises() {
+        val trainingData = jsonHelper.readTrainingData()
+        if (trainingData.exerciseLibrary.isEmpty()) {
+            val defaultExercises = listOf(
+                ExerciseLibraryItem(id = 1, name = "Deadlift"),
+                ExerciseLibraryItem(id = 2, name = "Squat"),
+                ExerciseLibraryItem(id = 3, name = "Bench Press"),
+                ExerciseLibraryItem(id = 4, name = "Biceps Curl"),
+                ExerciseLibraryItem(id = 5, name = "Triceps Pushdown")
+            )
+            trainingData.exerciseLibrary.addAll(defaultExercises)
+            jsonHelper.writeTrainingData(trainingData)
+        }
     }
 
     private fun setupClickListeners() {
@@ -46,6 +63,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.buttonExercises.setOnClickListener {
             val intent = Intent(this, ExercisesActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.buttonSettings.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
             startActivity(intent)
         }
     }

@@ -14,6 +14,16 @@
         android:layout_height="wrap_content"
         android:padding="24dp">
 
+        <ImageButton
+            android:id="@+id/button_settings"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/settings"
+            android:src="@drawable/ic_settings"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <!-- Header Section -->
         <TextView
             android:id="@+id/text_welcome_title"
@@ -154,7 +164,7 @@
             android:id="@+id/card_minutes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android.layout_marginStart="8dp"
             app:cardBackgroundColor="@color/fitness_card_background"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"

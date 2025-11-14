@@ -3,6 +3,8 @@ package com.example.fitness
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.fitness.databinding.ActivityEditExerciseBinding
 import com.example.fitness.models.ExerciseLibraryItem
@@ -16,7 +18,6 @@ class EditExerciseActivity : AppCompatActivity() {
     companion object {
         const val EXTRA_EXERCISE_ID = "extra_exercise_id"
         const val EXTRA_EXERCISE_NAME = "extra_exercise_name"
-        const val EXTRA_NEW_EXERCISE = "extra_new_exercise"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,18 +33,51 @@ class EditExerciseActivity : AppCompatActivity() {
             binding.textEditExerciseTitle.text = "Edit Exercise"
             val exerciseName = intent.getStringExtra(EXTRA_EXERCISE_NAME)
             binding.editTextExerciseName.setText(exerciseName)
+            binding.buttonDeleteExercise.visibility = View.VISIBLE
         } else {
             // Create mode
             binding.textEditExerciseTitle.text = "Create New Exercise"
+            binding.buttonDeleteExercise.visibility = View.GONE
         }
 
+        setupClickListeners()
+    }
+
+    private fun setupClickListeners() {
         binding.buttonSaveExercise.setOnClickListener {
             saveExercise()
+        }
+
+        binding.buttonDeleteExercise.setOnClickListener {
+            showDeleteConfirmationDialog()
         }
 
         binding.buttonBack.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("Delete Exercise")
+            .setMessage("Are you sure you want to delete this exercise? This will remove all logged sets for this exercise from your history. This action cannot be undone.")
+            .setPositiveButton("Delete") { _, _ ->
+                deleteExercise()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun deleteExercise() {
+        val trainingData = jsonHelper.readTrainingData()
+        trainingData.exerciseLibrary.removeAll { it.id == exerciseId }
+        trainingData.trainings.forEach { session ->
+            session.exercises.removeAll { it.exerciseId == exerciseId }
+        }
+        jsonHelper.writeTrainingData(trainingData)
+
+        setResult(Activity.RESULT_OK)
+        finish()
     }
 
     private fun saveExercise() {
@@ -60,16 +94,16 @@ class EditExerciseActivity : AppCompatActivity() {
             val existingExercise = trainingData.exerciseLibrary.find { it.id == exerciseId }
             if (existingExercise != null) {
                 // Update name in the library
-                val updatedExercise = existingExercise.copy(name = newName)
                 val index = trainingData.exerciseLibrary.indexOf(existingExercise)
-                trainingData.exerciseLibrary[index] = updatedExercise
+                if (index != -1) {
+                    trainingData.exerciseLibrary[index] = existingExercise.copy(name = newName)
+                }
 
                 // Update name in all past training sessions for data integrity
                 trainingData.trainings.forEach { session ->
                     session.exercises.forEach { entry ->
                         if (entry.exerciseId == exerciseId) {
-                            val entryIndex = session.exercises.indexOf(entry)
-                            session.exercises[entryIndex].copy(exerciseName = newName)
+                            entry.exerciseName = newName
                         }
                     }
                 }

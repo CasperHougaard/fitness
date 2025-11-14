@@ -40,4 +40,8 @@ class JsonHelper(private val context: Context) {
             Log.e(TAG, "Error writing to training_data.json", e)
         }
     }
+
+    fun resetTrainingData() {
+        writeTrainingData(TrainingData())
+    }
 }

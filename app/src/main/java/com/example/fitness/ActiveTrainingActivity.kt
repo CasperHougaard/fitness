@@ -85,9 +85,18 @@ class ActiveTrainingActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        adapter = ActiveExercisesAdapter(groupedExercises) { exerciseId, exerciseName ->
-            launchLogSetActivity(exerciseId, exerciseName)
-        }
+        adapter = ActiveExercisesAdapter(
+            groupedExercises,
+            onAddSetClicked = { exerciseId, exerciseName ->
+                launchLogSetActivity(exerciseId, exerciseName)
+            },
+            onDuplicateSetClicked = { exerciseId ->
+                duplicateLastSet(exerciseId)
+            },
+            onDeleteExerciseClicked = { exerciseId ->
+                deleteExercise(exerciseId)
+            }
+        )
         binding.recyclerViewActiveExercises.adapter = adapter
         binding.recyclerViewActiveExercises.layoutManager = LinearLayoutManager(this)
     }
@@ -152,6 +161,24 @@ class ActiveTrainingActivity : AppCompatActivity() {
             val newGroup = oldGroup.copy(sets = newSets.sortedBy { it.setNumber })
             groupedExercises[groupIndex] = newGroup
             adapter.notifyItemChanged(groupIndex)
+        }
+    }
+
+    private fun duplicateLastSet(exerciseId: Int) {
+        val lastSet = currentExerciseEntries.filter { it.exerciseId == exerciseId }.lastOrNull()
+        if (lastSet != null) {
+            val newSetNumber = lastSet.setNumber + 1
+            val newSet = lastSet.copy(setNumber = newSetNumber, rating = null, note = null)
+            updateExercises(newSet)
+        }
+    }
+
+    private fun deleteExercise(exerciseId: Int) {
+        val groupIndex = groupedExercises.indexOfFirst { it.exerciseId == exerciseId }
+        if (groupIndex != -1) {
+            groupedExercises.removeAt(groupIndex)
+            currentExerciseEntries.removeAll { it.exerciseId == exerciseId }
+            adapter.notifyItemRemoved(groupIndex)
         }
     }
 

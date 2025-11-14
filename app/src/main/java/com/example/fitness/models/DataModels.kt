@@ -14,7 +14,7 @@ data class ExerciseLibraryItem(
 @Parcelize
 data class ExerciseEntry(
     val exerciseId: Int,
-    val exerciseName: String,
+    var exerciseName: String,
     val setNumber: Int,
     val kg: Float,
     val reps: Int,
@@ -27,7 +27,7 @@ data class TrainingSession(
     val id: String = UUID.randomUUID().toString(), // GUID
     val trainingNumber: Int,
     val date: String, // yyyy/mm/dd
-    val exercises: List<ExerciseEntry>
+    val exercises: MutableList<ExerciseEntry>
 ) : Parcelable
 
 @Parcelize

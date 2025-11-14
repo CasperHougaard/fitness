@@ -15,9 +15,9 @@ class ExercisesActivity : AppCompatActivity() {
     private lateinit var jsonHelper: JsonHelper
     private lateinit var adapter: ExerciseLibraryAdapter
 
-    private val editExerciseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+    private val addExerciseLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // An exercise was either created or edited. We just need to reload the list.
+            // An exercise was either created or added from default. We just need to reload the list.
             loadExercises()
         }
     }
@@ -38,7 +38,12 @@ class ExercisesActivity : AppCompatActivity() {
         binding.buttonAddExercise.setOnClickListener {
             // Launch in create mode (no ID passed)
             val intent = Intent(this, EditExerciseActivity::class.java)
-            editExerciseLauncher.launch(intent)
+            addExerciseLauncher.launch(intent)
+        }
+
+        binding.buttonAddFromDefault.setOnClickListener {
+            val intent = Intent(this, SelectDefaultExerciseActivity::class.java)
+            addExerciseLauncher.launch(intent)
         }
 
         binding.buttonBack.setOnClickListener {
@@ -55,7 +60,7 @@ class ExercisesActivity : AppCompatActivity() {
                     putExtra(EditExerciseActivity.EXTRA_EXERCISE_ID, exercise.id)
                     putExtra(EditExerciseActivity.EXTRA_EXERCISE_NAME, exercise.name)
                 }
-                editExerciseLauncher.launch(intent)
+                addExerciseLauncher.launch(intent)
             }
         )
         binding.recyclerViewExercises.adapter = adapter

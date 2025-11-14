@@ -30,6 +30,13 @@ class ProgressActivity : AppCompatActivity() {
         jsonHelper = JsonHelper(this)
 
         setupSpinner()
+        setupClickListeners()
+    }
+
+    private fun setupClickListeners() {
+        binding.buttonBack.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun setupSpinner() {

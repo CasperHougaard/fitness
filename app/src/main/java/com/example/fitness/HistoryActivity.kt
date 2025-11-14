@@ -19,6 +19,13 @@ class HistoryActivity : AppCompatActivity() {
         jsonHelper = JsonHelper(this)
 
         setupRecyclerView()
+        setupClickListeners()
+    }
+
+    private fun setupClickListeners() {
+        binding.buttonBack.setOnClickListener {
+            onBackPressed()
+        }
     }
 
     private fun setupRecyclerView() {

@@ -12,13 +12,17 @@ data class GroupedExercise(val exerciseId: Int, val exerciseName: String, val se
 
 class ActiveExercisesAdapter(
     private val groupedExercises: List<GroupedExercise>,
-    private val onAddSetClicked: (exerciseId: Int, exerciseName: String) -> Unit
+    private val onAddSetClicked: (exerciseId: Int, exerciseName: String) -> Unit,
+    private val onDuplicateSetClicked: (exerciseId: Int) -> Unit,
+    private val onDeleteExerciseClicked: (exerciseId: Int) -> Unit
 ) : RecyclerView.Adapter<ActiveExercisesAdapter.GroupedExerciseViewHolder>() {
 
     class GroupedExerciseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val exerciseName: TextView = view.findViewById(R.id.text_exercise_name)
         val setsSummary: TextView = view.findViewById(R.id.text_sets_summary)
         val addSetButton: Button = view.findViewById(R.id.button_add_set)
+        val duplicateSetButton: Button = view.findViewById(R.id.button_duplicate_set)
+        val deleteExerciseButton: Button = view.findViewById(R.id.button_delete_exercise)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GroupedExerciseViewHolder {
@@ -38,6 +42,14 @@ class ActiveExercisesAdapter(
 
         holder.addSetButton.setOnClickListener {
             onAddSetClicked(groupedExercise.exerciseId, groupedExercise.exerciseName)
+        }
+
+        holder.duplicateSetButton.setOnClickListener {
+            onDuplicateSetClicked(groupedExercise.exerciseId)
+        }
+
+        holder.deleteExerciseButton.setOnClickListener {
+            onDeleteExerciseClicked(groupedExercise.exerciseId)
         }
     }
 
