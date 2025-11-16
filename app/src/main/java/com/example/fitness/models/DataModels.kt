@@ -35,3 +35,9 @@ data class TrainingData(
     val exerciseLibrary: MutableList<ExerciseLibraryItem> = mutableListOf(),
     val trainings: MutableList<TrainingSession> = mutableListOf()
 ) : Parcelable
+
+data class GroupedExercise(
+    val exerciseId: Int,
+    val exerciseName: String,
+    val sets: List<ExerciseEntry>
+)

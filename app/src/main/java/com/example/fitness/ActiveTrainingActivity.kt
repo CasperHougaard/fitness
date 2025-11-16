@@ -6,11 +6,14 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitness.databinding.ActivityActiveTrainingBinding
 import com.example.fitness.models.ExerciseEntry
+import com.example.fitness.models.GroupedExercise
 import com.example.fitness.models.TrainingSession
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -81,6 +84,7 @@ class ActiveTrainingActivity : AppCompatActivity() {
 
         setupRecyclerView()
         setupClickListeners()
+        setupBackButtonInterceptor()
         updateDateDisplay()
     }
 
@@ -116,7 +120,30 @@ class ActiveTrainingActivity : AppCompatActivity() {
         }
 
         binding.buttonBack.setOnClickListener {
-            onBackPressed()
+            handleBackButton()
+        }
+    }
+
+    private fun setupBackButtonInterceptor() {
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                handleBackButton()
+            }
+        })
+    }
+
+    private fun handleBackButton() {
+        if (currentExerciseEntries.isNotEmpty()) {
+            AlertDialog.Builder(this)
+                .setTitle("Cancel Workout")
+                .setMessage("Are you sure you want to cancel this workout? All progress will be lost.")
+                .setPositiveButton("Yes") { _, _ ->
+                    finish()
+                }
+                .setNegativeButton("No", null)
+                .show()
+        } else {
+            finish()
         }
     }
 

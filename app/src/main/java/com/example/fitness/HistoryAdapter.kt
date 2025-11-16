@@ -19,6 +19,9 @@ class HistoryAdapter(private val trainings: List<TrainingSession>) : RecyclerVie
         holder.binding.textTrainingTitle.text = "Training #${training.trainingNumber}"
         holder.binding.textTrainingDate.text = training.date
 
+        val totalVolume = training.exercises.sumOf { (it.reps ?: 0) * (it.kg ?: 0f).toDouble() }
+        holder.binding.textTrainingVolume.text = "Volume: ${totalVolume.toInt()} kg"
+
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, TrainingDetailActivity::class.java).apply {

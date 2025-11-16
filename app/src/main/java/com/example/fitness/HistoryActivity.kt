@@ -22,6 +22,11 @@ class HistoryActivity : AppCompatActivity() {
         setupClickListeners()
     }
 
+    override fun onResume() {
+        super.onResume()
+        setupRecyclerView()
+    }
+
     private fun setupClickListeners() {
         binding.buttonBack.setOnClickListener {
             onBackPressed()

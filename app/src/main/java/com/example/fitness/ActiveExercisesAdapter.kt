@@ -7,8 +7,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitness.models.ExerciseEntry
-
-data class GroupedExercise(val exerciseId: Int, val exerciseName: String, val sets: List<ExerciseEntry>)
+import com.example.fitness.models.GroupedExercise
 
 class ActiveExercisesAdapter(
     private val groupedExercises: List<GroupedExercise>,

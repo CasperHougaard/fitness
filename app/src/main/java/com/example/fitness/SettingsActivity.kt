@@ -13,8 +13,16 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
         jsonHelper = JsonHelper(this)
 
+        setupClickListeners()
+    }
+
+    private fun setupClickListeners() {
         findViewById<Button>(R.id.button_reset_data).setOnClickListener {
             showResetDataConfirmationDialog()
+        }
+
+        findViewById<Button>(R.id.button_back).setOnClickListener {
+            onBackPressed()
         }
     }
 
