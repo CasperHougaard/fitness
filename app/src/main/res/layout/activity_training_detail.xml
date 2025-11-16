@@ -8,6 +8,7 @@
     android:paddingEnd="24dp"
     android:paddingBottom="24dp"
     android:paddingTop="54dp"
+    android:background="@color/fitness_background"
     tools:context=".TrainingDetailActivity">
 
     <androidx.recyclerview.widget.RecyclerView
